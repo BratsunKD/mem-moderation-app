@@ -1,1 +1,1 @@
-# mem-moderation-app
+# meme-moderation-app
