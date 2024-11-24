@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "moderator"
+version = "0.1.0"
+description = ""
+authors = ["Kirill Bratsun <kdbratsun@avito.ru>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = "^0.115.5"
+uvicorn = "^0.32.1"
+aiokafka = "^0.12.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
