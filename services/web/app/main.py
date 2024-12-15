@@ -17,3 +17,11 @@ async def send(message: Message, producer: AIOWebProducer = Depends(get_producer
     message_to_produce = json.dumps(message.model_dump()).encode(encoding="utf-8")
     print("OK", message_to_produce)
     await producer.send(value=message_to_produce)
+
+
+@app.post("/text-moderation")
+async def send(message: Message) -> None:
+    message_to_produce = json.dumps(message.model_dump()).encode(encoding="utf-8")
+
+
+

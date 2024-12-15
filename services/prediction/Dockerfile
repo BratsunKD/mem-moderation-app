@@ -1,6 +1,6 @@
-FROM python:3.10-slim-buster
+FROM python:3.11-slim-buster
 
-WORKDIR /usr/src/moderator
+WORKDIR /usr/src/prediction
 
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1

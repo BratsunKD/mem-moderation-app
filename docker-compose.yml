@@ -20,6 +20,21 @@ services:
       dockerfile: Dockerfile
     container_name: "moderator"
     ports:
+      - "7000:7000"
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: $KAFKA_BOOTSTRAP_SERVERS
+      PREDICTION_TOPIC: $PREDICTION_TOPIC
+    depends_on:
+      kafka:
+        condition: service_healthy
+
+  prediction:
+    restart: on-failure
+    build:
+      context: services/prediction/
+      dockerfile: Dockerfile
+    container_name: "prediction"
+    ports:
       - "9000:9000"
     environment:
       KAFKA_BOOTSTRAP_SERVERS: $KAFKA_BOOTSTRAP_SERVERS
@@ -37,7 +52,6 @@ services:
     environment:
       - ALLOW_ANONYMOUS_LOGIN=$ALLOW_ANONYMOUS_LOGIN
 
-
   kafka:
     image: 'bitnami/kafka:2.8.0'
     container_name: kafka
@@ -53,3 +67,9 @@ services:
       interval: 1s
       timeout: 60s
       retries: 60
+
+  redis: # Добавляем сервис Redis
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
