@@ -61,8 +61,10 @@ class KafkaTextProcessor:
 
                     prediction = self.model.predict(text)
                     result = {
-                        "original_text": text,
+                        "text": text,
                         "prediction": prediction,
+                        "user_id": input_data.get("user_id", ""),
+                        "mem_id": input_data.get("mem_id", ""),
                         "metadata": {"source_offset": message.offset},
                     }
                     print(f"Processed result: {result}")

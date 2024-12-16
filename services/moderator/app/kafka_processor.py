@@ -44,12 +44,12 @@ class KafkaTextProcessor:
                 try:
                     input_data = json.loads(message.value.decode("utf-8"))
                     user_id = input_data.get("user_id")
-                    item_id = input_data.get("item_id")
+                    mem_id = input_data.get("mem_id")
                     text = input_data.get("text")
                     prediction = input_data.get("prediction")
 
                     # Генерация ключа для Redis
-                    redis_key = f"{user_id}:{item_id}:{text}"
+                    redis_key = f"{user_id}:{mem_id}:{text}"
 
                     # Сохранение в Redis
                     await self.redis.set(redis_key, prediction)

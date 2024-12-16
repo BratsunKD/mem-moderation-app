@@ -8,7 +8,7 @@ from fastapi import FastAPI
 
 KAFKA_CONSUMER_GROUP = "text_prediction_consumer"
 
-# app = FastAPI()
+app = FastAPI()
 
 
 async def main():
