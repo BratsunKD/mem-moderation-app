@@ -1,17 +1,15 @@
 import json
 import asyncio
-import aioredis
 from aiokafka import AIOKafkaConsumer
 
 
 class KafkaTextProcessor:
-    def __init__(self, consume_topic: str, bootstrap_servers: str, group_id: str, redis_url: str, ):
+    def __init__(self, consume_topic: str, bootstrap_servers: str, group_id: str, redis):
         self.consume_topic = consume_topic
         self.bootstrap_servers = bootstrap_servers
         self.group_id = group_id
         self.consumer = None
-        self.redis_url = redis_url
-        self.redis = None
+        self.redis = redis
 
     async def start(self):
         loop = asyncio.get_running_loop()
@@ -27,18 +25,13 @@ class KafkaTextProcessor:
         await self.consumer.start()
         print(f"Consumer started for topic: {self.consume_topic}")
 
-        self.redis = await aioredis.from_url(self.redis_url, decode_responses=True)
-        print("Connected to Redis")
-
     async def stop(self):
         if self.consumer:
             await self.consumer.stop()
 
-        if self.redis:
-            await self.redis.close()
-            print("Redis connection closed")
-
-    async def process_messages(self):
+    async def write_to_redis(self):
+        print("start write to redis")
+        print(self.redis)
         try:
             async for message in self.consumer:
                 try:

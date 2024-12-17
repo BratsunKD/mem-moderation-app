@@ -1,31 +1,39 @@
-import asyncio
-
-from app import settings
-from app.kafka_processor import KafkaTextProcessor
 from fastapi import FastAPI
+import json
+
+import asyncio
+import aioredis
+from app.schemas import Prediction, Message
+from app.redis_client import RedisClient
+from app.settings import REDIS_URL
+from contextlib import asynccontextmanager
+
+
+pool = aioredis.ConnectionPool.from_url(REDIS_URL, max_connections=10)
+redis = RedisClient(REDIS_URL, pool=pool)
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    await redis.start_connection()
+    yield
+    await redis.close_connection()
+
+
+app = FastAPI(lifespan=lifespan)
+
+
+@app.get("/get-prediction")
+async def get_prediction(message: Message):
+    user_id = message.user_id
+    mem_id = message.mem_id
+    text = message.text
+
+    redis_key = f"{user_id}:{mem_id}:{text}"
+
+    result = await redis.get(redis_key)
+    print(f"OK result: {result}")
+    return float(result)
 
 
 
-KAFKA_CONSUMER_GROUP = "text_prediction_consumer"
-
-app = FastAPI()
-
-
-async def main():
-    consumer = KafkaTextProcessor(
-        consume_topic=settings.CONSUME_TOPIC,
-        bootstrap_servers=settings.KAFKA_BOOTSTRAP_SERVERS,
-        group_id=settings.KAFKA_CONSUMER_GROUP,
-        redis_url=settings.REDIS_URL,
-    )
-
-    await consumer.start()
-    try:
-        await consumer.process_messages()
-    finally:
-        await consumer.stop()
-
-
-if __name__ == "__main__":
-    asyncio.run(main())
-    print(1)

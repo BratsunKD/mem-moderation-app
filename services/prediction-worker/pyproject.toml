@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "web"
+name = "prediction-worker"
 version = "0.1.0"
 description = ""
 authors = ["Kirill Bratsun <kdbratsun@avito.ru>"]
@@ -7,11 +7,10 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.10"
-quart = "^0.19.9"
-aiokafka = "^0.12.0"
-aioredis = "^2.0.1"
 fastapi = "^0.115.5"
 uvicorn = "^0.32.1"
+aiokafka = "^0.11.0"
+aioredis = "^2.0.0"
 
 
 [build-system]

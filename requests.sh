@@ -5,11 +5,11 @@ URL="http://127.0.0.1:8000/text-moderation"
 
 # Пример значений для параметров
 TEXTS=("Hello, world!" "FastAPI is great" "Kafka and Redis integration" "Test message" "Another text message")
-USER_IDS=(101 102 103 104 105)
-MEM_IDS=(1 2 3 4 5)
+USER_IDS=(101 102 103 104 105 106 107)
+MEM_IDS=(1 2 3 4 5 6 7)
 
 # Цикл для отправки запросов
-for i in {1..500}; do
+for i in {1..100}; do
   TEXT=${TEXTS[$RANDOM % ${#TEXTS[@]}]}    # Выбор случайного текста
   USER_ID=${USER_IDS[$RANDOM % ${#USER_IDS[@]}]}  # Случайный user_id
   MEM_ID=${MEM_IDS[$RANDOM % ${#MEM_IDS[@]}]}     # Случайный mem_id

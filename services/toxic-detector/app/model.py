@@ -1,4 +1,4 @@
-
+import time
 
 
 class MockModel:
@@ -7,4 +7,5 @@ class MockModel:
         self.weights_path = weights_path
 
     def predict(self, text: str) -> int:
+        time.sleep(1)
         return len(text)

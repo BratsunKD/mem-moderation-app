@@ -20,6 +20,19 @@ services:
       dockerfile: Dockerfile
     container_name: "moderator"
     ports:
+      - "3000:3000"
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: $KAFKA_BOOTSTRAP_SERVERS
+      TEXT_TOPIC: $TEXT_TOPIC
+    command: uvicorn app.main:app --reload --host 0.0.0.0 --port 3000
+
+  prediction-worker:
+    restart: on-failure
+    build:
+      context: services/prediction-worker/
+      dockerfile: Dockerfile
+    container_name: "prediction-worker"
+    ports:
       - "7000:7000"
     environment:
       KAFKA_BOOTSTRAP_SERVERS: $KAFKA_BOOTSTRAP_SERVERS
@@ -31,9 +44,9 @@ services:
   prediction:
     restart: on-failure
     build:
-      context: services/prediction/
+      context: services/toxic-detector/
       dockerfile: Dockerfile
-    container_name: "prediction"
+    container_name: "toxic-detector"
     ports:
       - "9000:9000"
     environment:

@@ -1,12 +1,12 @@
 [tool.poetry]
-name = "prediction"
+name = "toxic-detector"
 version = "0.1.0"
 description = ""
 authors = ["Kirill Bratsun <kdbratsun@avito.ru>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = "^3.10"
 fastapi = "^0.115.5"
 uvicorn = "^0.32.1"
 aiokafka = "^0.12.0"
