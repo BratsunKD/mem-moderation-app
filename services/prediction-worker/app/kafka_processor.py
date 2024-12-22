@@ -4,12 +4,13 @@ from aiokafka import AIOKafkaConsumer
 
 
 class KafkaTextProcessor:
-    def __init__(self, consume_topic: str, bootstrap_servers: str, group_id: str, redis):
+    def __init__(self, consume_topic: str, bootstrap_servers: str, group_id: str, redis, statsd):
         self.consume_topic = consume_topic
         self.bootstrap_servers = bootstrap_servers
         self.group_id = group_id
         self.consumer = None
         self.redis = redis
+        self.statsd = statsd
 
     async def start(self):
         loop = asyncio.get_running_loop()
@@ -35,6 +36,7 @@ class KafkaTextProcessor:
         try:
             async for message in self.consumer:
                 try:
+
                     input_data = json.loads(message.value.decode("utf-8"))
                     user_id = input_data.get("user_id")
                     mem_id = input_data.get("mem_id")

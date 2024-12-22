@@ -1,10 +1,13 @@
 import json
 import asyncio
+import os
+import time
+from statsd import StatsClient
 from aiokafka import AIOKafkaConsumer, AIOKafkaProducer
 
 
 class KafkaTextProcessor:
-    def __init__(self, consume_topic: str, produce_topic: str, bootstrap_servers: str, group_id: str, model):
+    def __init__(self, consume_topic: str, produce_topic: str, bootstrap_servers: str, group_id: str, model, statsd):
         self.consume_topic = consume_topic
         self.produce_topic = produce_topic
         self.bootstrap_servers = bootstrap_servers
@@ -12,6 +15,7 @@ class KafkaTextProcessor:
         self.consumer = None
         self.producer = None
         self.model = model
+        self.statsd = statsd
 
     async def start(self):
         loop = asyncio.get_running_loop()
@@ -55,11 +59,24 @@ class KafkaTextProcessor:
         try:
             async for message in self.consumer:
                 try:
+
+                    model_type = 'bert'
+
                     input_data = json.loads(message.value.decode("utf-8"))
                     text = input_data.get("text", "")
                     print(f"Received message: {input_data}")
 
+                    self.statsd.incr(f'predict.{model_type}.count')
+
+                    tic = time.perf_counter()
                     prediction = self.model.predict(text)
+                    toc = time.perf_counter()
+
+                    # Пока зашлушка
+                    model_type = 'bert'
+                    self.statsd.gauge(f'predict.{model_type}.result.proba', prediction)
+                    self.statsd.timing(f'predict.{model_type}.timing.inference', toc - tic)
+
                     result = {
                         "text": text,
                         "prediction": prediction,
@@ -70,6 +87,7 @@ class KafkaTextProcessor:
                     print(f"Processed result: {result}")
 
                     await self.send_to_producer(result)
+                    self.statsd.incr(f'predict.produce.success.count')
                 except Exception as e:
                     print(f"Error processing message: {e}")
         except Exception as e:

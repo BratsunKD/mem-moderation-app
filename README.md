@@ -21,16 +21,21 @@ docker-compose up
 
 Отправить текст на модерацию 
 ```
-curl -X POST http://127.0.0.1:8000/text-moderation \
+curl -X POST http://127.0.0.1:8000/text-moderation/ \
 -H "Content-Type: application/json" \
--d '{"text": "Hello, world!", "user_id": 123, "mem_id": 3}'
+-d '{"text": "some text", "user_id": 123, "mem_id": 3}'
 ```
 
 получить результат модерации
 ```
-curl -X GET http://127.0.0.1:3000/get-prediction \
+curl -X POST http://127.0.0.1:8000/get-result/ \
 -H "Content-Type: application/json" \
--d '{"text": "Hello, world!", "user_id": 123, "mem_id": 3}'
+-d '{"text": "some text", "user_id": 123, "mem_id": 3}'
+```
+### Grafana
+
+```
+
 ```
 
 ### kafka

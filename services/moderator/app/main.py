@@ -23,16 +23,16 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 
 
-@app.get("/get-prediction")
+@app.post("/get-prediction/")
 async def get_prediction(message: Message):
     user_id = message.user_id
     mem_id = message.mem_id
     text = message.text
 
     redis_key = f"{user_id}:{mem_id}:{text}"
-
     result = await redis.get(redis_key)
-    print(f"OK result: {result}")
+    if result is None:
+        return result
     return float(result)
 
 

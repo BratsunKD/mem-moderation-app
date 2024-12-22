@@ -1,17 +1,33 @@
 import asyncio
 
+import os
+from statsd import StatsClient
+
 from app import settings
-from app.model import MockModel
+from app.model import BertModerator
 from app.kafka_processor import KafkaTextProcessor
+from app.settings import GRAPHITE_HOST, GRAPHITE_PORT, MODEL_NAME
+from transformers import pipeline
 
 
 KAFKA_CONSUMER_GROUP = "text_processing_consumer"
-MODEL_WEIGHTS_PATH = "./weights/model_weights"
+MODEL_WEIGHTS_PATH = "model_weights/bert_toxic_model.pt"
 
+statsd = StatsClient(GRAPHITE_HOST, int(GRAPHITE_PORT), prefix='toxic-detector')
 
 
 async def main():
-    model = MockModel(weights_path=MODEL_WEIGHTS_PATH)
+    #model = BertModerator(weights_path=MODEL_WEIGHTS_PATH, name=MODEL_NAME)
+
+    # Загрузка модели и токенизатора из локальной папки
+    model = pipeline("text-classification", model=MODEL_WEIGHTS_PATH, tokenizer=MODEL_NAME)
+
+    # Пример текста для классификации
+    text = "This is an example text."
+
+    # Получаем результат классификации
+    result = model(text)
+    print(result)
 
     processor = KafkaTextProcessor(
         consume_topic=settings.CONSUME_TOPIC,
@@ -19,6 +35,7 @@ async def main():
         bootstrap_servers=settings.KAFKA_BOOTSTRAP_SERVERS,
         group_id=KAFKA_CONSUMER_GROUP,
         model=model,
+        statsd=statsd,
     )
 
     await processor.start()
