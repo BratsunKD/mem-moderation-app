@@ -4,6 +4,7 @@
 
 ### архитектура
 
+![system](https://github.com/user-attachments/assets/8c2dced7-3423-4e6a-a278-2b7557d89d0c)
 
 ### запуск
 
