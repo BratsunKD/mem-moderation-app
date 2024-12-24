@@ -1,4 +1,4 @@
-# meme-moderation-app
+# text-moderation-app
 
 Что надо сделать:
 
@@ -31,11 +31,6 @@ curl -X POST http://127.0.0.1:8000/text-moderation/ \
 curl -X POST http://127.0.0.1:8000/get-result/ \
 -H "Content-Type: application/json" \
 -d '{"text": "some text", "user_id": 123, "mem_id": 3}'
-```
-### Grafana
-
-```
-
 ```
 
 ### kafka
