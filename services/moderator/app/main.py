@@ -33,7 +33,7 @@ async def get_prediction(message: Message):
     result = await redis.get(redis_key)
     if result is None:
         return result
-    return float(result)
+    return result
 
 
 

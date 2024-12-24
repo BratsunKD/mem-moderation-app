@@ -17,17 +17,7 @@ statsd = StatsClient(GRAPHITE_HOST, int(GRAPHITE_PORT), prefix='toxic-detector')
 
 
 async def main():
-    #model = BertModerator(weights_path=MODEL_WEIGHTS_PATH, name=MODEL_NAME)
-
-    # Загрузка модели и токенизатора из локальной папки
-    model = pipeline("text-classification", model=MODEL_WEIGHTS_PATH, tokenizer=MODEL_NAME)
-
-    # Пример текста для классификации
-    text = "This is an example text."
-
-    # Получаем результат классификации
-    result = model(text)
-    print(result)
+    model = BertModerator(weights_path=MODEL_WEIGHTS_PATH, name=MODEL_NAME)
 
     processor = KafkaTextProcessor(
         consume_topic=settings.CONSUME_TOPIC,

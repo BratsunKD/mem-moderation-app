@@ -72,14 +72,15 @@ class KafkaTextProcessor:
                     prediction = self.model.predict(text)
                     toc = time.perf_counter()
 
-                    # Пока зашлушка
+                    print(f"Prediction OK")
                     model_type = 'bert'
-                    self.statsd.gauge(f'predict.{model_type}.result.proba', prediction)
+                    #self.statsd.gauge(f'predict.{model_type}.result.proba', prediction[])
                     self.statsd.timing(f'predict.{model_type}.timing.inference', toc - tic)
 
+                    print("TYPE", type(prediction))
                     result = {
                         "text": text,
-                        "prediction": prediction,
+                        "prediction": [p.item() for p in prediction],
                         "user_id": input_data.get("user_id", ""),
                         "mem_id": input_data.get("mem_id", ""),
                         "metadata": {"source_offset": message.offset},
