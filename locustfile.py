@@ -15,7 +15,7 @@ class QuickstartUser(HttpUser):
         message = {
             "text": random.choice(texts),
             "user_id": random.randint(1, 50),
-            "mem_id": random.randint(1, 35),
+            "text_id": random.randint(1, 35),
         }
         self.client.post('/text-moderation/', json=message)
 
@@ -24,6 +24,6 @@ class QuickstartUser(HttpUser):
         message = {
             "text": random.choice(texts),
             "user_id": random.randint(1, 50),
-            "mem_id": random.randint(1, 35),
+            "text_id": random.randint(1, 35),
         }
         self.client.post('/get-result/', json=message)

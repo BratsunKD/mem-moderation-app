@@ -5,9 +5,9 @@ from statsd import StatsClient
 
 from app import settings
 from app.model import BertModerator
-from app.kafka_processor import KafkaTextProcessor
+from app.kafka_processor import KafkaTextProcessor, monitor_kafka_lag
 from app.settings import GRAPHITE_HOST, GRAPHITE_PORT, MODEL_NAME
-from transformers import pipeline
+
 
 
 KAFKA_CONSUMER_GROUP = "text_processing_consumer"
@@ -18,7 +18,6 @@ statsd = StatsClient(GRAPHITE_HOST, int(GRAPHITE_PORT), prefix='toxic-detector')
 
 async def main():
     model = BertModerator(weights_path=MODEL_WEIGHTS_PATH, name=MODEL_NAME)
-
     processor = KafkaTextProcessor(
         consume_topic=settings.CONSUME_TOPIC,
         produce_topic=settings.PRODUCE_TOPIC,
@@ -33,7 +32,6 @@ async def main():
         await processor.process_messages()
     finally:
         await processor.stop()
-
 
 if __name__ == "__main__":
     asyncio.run(main())

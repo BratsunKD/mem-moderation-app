@@ -5,6 +5,7 @@
 ### архитектура
 
 
+
 ### запуск
 
 ```
@@ -21,14 +22,14 @@ docker-compose up
 ```
 curl -X POST http://127.0.0.1:8000/text-moderation/ \
 -H "Content-Type: application/json" \
--d '{"text": "some text", "user_id": 123, "mem_id": 3}'
+-d '{"text": "some text", "user_id": 123, "text_id": 3}'
 ```
 
 получить результат модерации
 ```
 curl -X POST http://127.0.0.1:8000/get-result/ \
 -H "Content-Type: application/json" \
--d '{"text": "some text", "user_id": 123, "mem_id": 3}'
+-d '{"text": "some text", "user_id": 123, "text_id": 3}'
 ```
 
 ### kafka

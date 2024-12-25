@@ -1,5 +1,6 @@
 import json
 import asyncio
+import time
 from aiokafka import AIOKafkaConsumer
 
 
@@ -36,20 +37,22 @@ class KafkaTextProcessor:
         try:
             async for message in self.consumer:
                 try:
-
                     input_data = json.loads(message.value.decode("utf-8"))
                     user_id = input_data.get("user_id")
-                    mem_id = input_data.get("mem_id")
+                    text_id = input_data.get("text_id")
                     text = input_data.get("text")
                     prediction = input_data.get("prediction")
 
-                    # Генерация ключа для Redis
-                    redis_key = f"{user_id}:{mem_id}:{text}"
+                    redis_key = f"{user_id}:{text_id}:{text}"
 
-                    # Сохранение в Redis
+                    tic = time.perf_counter()
                     await self.redis.set(redis_key, prediction)
+                    toc = time.perf_counter()
+                    self.statsd.timing('redis.worker.timing.write', toc - tic)
+                    self.statsd.incr('redis.worker.success.count')
                     print(f"Saved to Redis - Key: {redis_key}, Value: {prediction}")
                 except Exception as e:
+                    self.statsd.incr('redis.worker.error.count')
                     print(f"Error processing message: {e}")
         except Exception as e:
             print(f"Error in consumer loop: {e}")
